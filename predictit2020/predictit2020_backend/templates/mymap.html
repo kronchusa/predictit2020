@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- banner -->
+<div class="container">
+	<div class="banner-logo">
+		<a href="{% url 'homepage' %}">
+			<i class="fa fa-flag" aria-hidden="true" style="color:#555;"></i>
+			<h2 style="color:#777;">PredictIt <span style="color:#999;">2020</span> </h2>
+		</a>
+	</div>
+</div>
+
+<div class="container" style="margin-top:25px;margin-bottom:200px;">
+	<iframe src="{{ base_url }}/static/build/index.html" height="1000px" width="100%" frameborder="0">
+
+	</iframe>
+
+	<center><a class="btn btn-secondary" href="{% url 'homepage' %}">Home Sweet Homepage</a></center>
+</div>
+{% endblock %}

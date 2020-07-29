@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- banner -->
+<style>
+	.banner {
+		background-image: url("{% static 'images/american_flag.jpg' %}")
+	}
+</style>
+<div class="banner">
+	<div class="banner-layer">
+	<div class="container">
+		<div class="banner-logo">
+			<a href="index.html">
+				<i class="fa fa-flag" aria-hidden="true"></i>
+				<h1>PredictIt <span>2020</span> </h1>
+			</a>
+		</div>
+				</div>
+				<div class="agileits_w3layouts_menu">
+					<div class="shy-menu">
+						<a class="shy-menu-hamburger">
+							<span class="layer top"></span>
+							<span class="layer mid"></span>
+							<span class="layer btm"></span>
+						</a>
+						<div class="shy-menu-panel">
+							<nav class="menu menu--horatio link-effect-8" id="link-effect-8">
+								<ul class="w3layouts_menu__list">
+									<li class="active"><a href="{% url 'homepage' %}">Home</a></li>
+									<li><a href="{% if request.user.is_authenticated %}{% static 'build/index.html' %}{% else %}{% url 'login' %}?next={% static 'build/index.html' %}{% endif %}">My Prediction</a></li>
+								</ul>
+							</nav>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+				</div>
+			<div class="agile_banner_info">
+				<div class="agile_banner_info1">
+					<div id="typed-strings" class="agileits_w3layouts_strings">
+						<p>Predict the <i>election results</i></p>
+						<p>Make your <i>custom map</i> now</p>
+						<p>Think you can <i>call it?</i></p>
+						<p>More fun than a <i>root canal</i></p>
+						<p><i>Trump or Biden?</i> Who will it be?</p>
+					</div>
+					<span id="typed" style="white-space:pre;"></span>
+					<div style="margin-top:50px;">
+						<a class="btn btn-primary" href="{% if request.user.is_authenticated %}{% static 'build/index.html' %}{% else %}{% url 'login' %}?next={% static 'build/index.html' %}{% endif %}">Predict Now</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<!-- //banner -->
+<style>
+	.predictittext  h2 {
+		margin-top:150px;
+		margin-bottom:50px;
+	}
+	.predictittext p {
+		margin-top:25px;
+		margin-bottom:25px;
+	}
+
+</style>
+<div class="container predictittext">
+	<div class="well" style="margin-top:50px;margin-bottom:50px;">
+		<h2 style="">Correct Predictions</h2>
+		{% if not declare_winners %}
+		<p>The list of users who have correctly predicted the election will appear here after the results on November 3rd.</p>
+		{% endif %}
+		{% if declare_winners %}
+		<h3>Well done to the following users:</h3>
+		{% endif %}
+		<div class="well">
+			<table class="table">
+				<tbody>
+				{% if declare_winners %}
+
+				{% for winner in winners %}
+				<tr>
+					<td><h4>{{ winner.user.username }}</h4></td>
+				</tr>
+				{% empty %}
+				<tr>
+					<td><h4>Nobody correctly predicted this election.  LOL</h4></td>
+				</tr>
+				{% endfor %}
+				{% else %}
+				<tr>
+					<td>{{ prediction_count }} prediction{% if prediction_count != 1 %}s{% endif %} made so far!</td>
+				</tr>
+				{% endif %}
+				</tbody>
+			</table>
+		</div>
+
+		{% if not declare_winners %}
+		<p>Happy Predicting!</p>
+		<p style="margin-bottom:300px;">- The Management</p>
+		{% else %}
+		<p>
+			The list of users above correctly predicted the election results exactly before November 3rd.  Their skills of prognostication know few bounds.
+			I, personally, am like ridiculously impressed by each and every one of them.
+		</p>
+		{% endif %}
+	</div>
+
+</div>
+
+{% endblock %}

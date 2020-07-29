@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<style>
+	.banner {
+		background-image: url("{% static 'images/american_flag.jpg' %}")
+	}
+</style>
+
+<div class="banner">
+	<div class="banner-layer">
+	<div class="container">
+		<div class="banner-logo">
+			<a href="index.html">
+				<i class="fa fa-flag" aria-hidden="true"></i>
+				<h1>PredictIt <span>2020</span> </h1>
+			</a>
+		</div>
+				</div>
+				<div class="agileits_w3layouts_menu">
+					<div class="shy-menu">
+						<a class="shy-menu-hamburger">
+							<span class="layer top"></span>
+							<span class="layer mid"></span>
+							<span class="layer btm"></span>
+						</a>
+						<div class="shy-menu-panel">
+							<nav class="menu menu--horatio link-effect-8" id="link-effect-8">
+								<ul class="w3layouts_menu__list">
+									<li class="active"><a href="{% url 'homepage' %}">Home</a></li>
+									<li><a href="{% if request.user.is_authenticated %}{% static 'build/index.html' %}{% else %}{% url 'login' %}?next={% static 'build/index.html' %}{% endif %}">My Prediction</a></li>
+								</ul>
+							</nav>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+				</div>
+			<div class="agile_banner_info">
+				<div class="agile_banner_info1">
+					<div id="typed-strings" class="agileits_w3layouts_strings">
+						<p>Create a <i>new account</i> or Login below</p>
+						<p>Use a <i>pseudonym</i> as it will be listed publicly if you win!</p>
+						<p>Your friends will <i>be jealous</i> at your insane foresight</p>
+						<p>Wow it really takes you a <i>long time</i> to fill in a form...</p>
+					</div>
+					<span id="typed" style="white-space:pre;"></span>
+                    <form method="POST">
+						{% csrf_token %}
+                        <style>
+                            .form-control {
+                            margin-top:20px;
+                            margin-bottom:20px;
+                            }
+                        </style>
+                        <div class="container">
+							<p style="color:white;">Username (Use a pseudonym, will be listed publicly as a winner)</p>
+                            {{ form.username|add_class:'form-control' }}
+							<p style="color:white;">Enter your Password Twice</p>
+							{{ form.password1|add_class:'form-control' }}
+							{{ form.password2|add_class:'form-control' }}
+                            <input type="submit" class="btn btn-primary">
+                        </div>
+
+                        <p style="margin-top:20px;"><a href="{% url 'login' %}" style="color:white;">Login to an Existing Account</a></p>
+                    </form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+<!-- //banner -->
+
+{% endblock %}
