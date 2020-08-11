@@ -25,7 +25,7 @@ SECRET_KEY = 'd1s!amf_e=8kxqk=@!cdpi0_&ka(7(m8@v@48u+1a8oc!xaj9g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['www.predictit2020.com']
+ALLOWED_HOSTS = ['localhost', 'www.predictit2020.com']
 
 
 # Application definition

@@ -51,7 +51,6 @@ class ShareMapView(TemplateView):
         return context
 
 
-
 class RegisterView(View):
     def post(self, request):
         form = RegisterForm(request.POST)
