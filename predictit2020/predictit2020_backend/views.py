@@ -68,6 +68,9 @@ class RegisterView(View):
 
 
 class SaveStatesAPIView(APIView):
+
+    renderer_classes = [JSONRenderer]
+
     def post(self, request):
         if datetime.date.today() < datetime.date(year=2020, month=11, day=3):
             if request.user:
