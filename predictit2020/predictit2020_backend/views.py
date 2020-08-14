@@ -72,30 +72,31 @@ class SaveStatesAPIView(APIView):
     renderer_classes = [JSONRenderer]
 
     def post(self, request):
-        if datetime.date.today() < datetime.date(year=2020, month=11, day=3):
-            if request.user:
-                try:
-                    prediction = request.user.prediction
-                except:
-                    prediction = Prediction(user=request.user)
 
-                for state, fill_dict in request.data['states'].items():
-                    if state == 'ID':
-                        state = 'IDA'
-                    if fill_dict['fill'] == 'navy':
-                        setattr(prediction, state, 'd')
-                    else:
-                        setattr(prediction, state, 'r')
-
-                prediction.electoral_votes_dem = request.data['electoralVotes']['democrats']
-                prediction.electoral_votes_rep = request.data['electoralVotes']['republicans']
-
-                prediction.save()
-                return Response(status=200)
-            else:
-                return Response(status=403)
-        else:
+        if datetime.date.today() >= datetime.date(year=2020, month=11, day=3):
             return Response(status=403)
+
+        if not request.user:
+            return Response(status=403)
+
+        try:
+            prediction = request.user.prediction
+        except:
+            prediction = Prediction(user=request.user)
+
+        for state, fill_dict in request.data['states'].items():
+            if state == 'ID':
+                state = 'IDA'
+            if fill_dict['fill'] == 'navy':
+                setattr(prediction, state, 'd')
+            else:
+                setattr(prediction, state, 'r')
+
+        prediction.electoral_votes_dem = request.data['electoralVotes']['democrats']
+        prediction.electoral_votes_rep = request.data['electoralVotes']['republicans']
+
+        prediction.save()
+        return Response(status=200)
 
 
 class LoadStatesAPIView(APIView):
