@@ -64,6 +64,8 @@ function App(props) {
 
   const viewId = getParamsFromURL(props.location.search)['view_id']
 
+  const statesLeft = 51 - Object.keys(states).length
+
   React.useEffect(() => {
     const fetchUserPrediction = async () => {
         let res
@@ -164,7 +166,7 @@ function App(props) {
                                     else setSaveMessage("Did not save properly!  Please try clicking save again")
                                 }}
                                 variant="contained" disabled={!isFilled} color="primary" style={{marginTop: '50px'}}>
-                                {isFilled ? "Save My Prediction" : "Not Finished"}
+                                {isFilled ? "Save My Prediction" : statesLeft > 1 ? `${statesLeft} States Left` : 'DC2' in states ? "1 State Left!" : "Don't forget Washington D.C.!"}
                             </Button>}
                         </div>
                         {viewId === undefined && <div style={{marginTop: '50px'}}>

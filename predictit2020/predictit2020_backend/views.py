@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms.models import model_to_dict
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, HttpResponseRedirect
 from django.views.generic import TemplateView, View
 from django.urls import reverse_lazy
 
@@ -58,9 +58,12 @@ class RegisterView(View):
             form.save()
             new_user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
             login(request, new_user)
-            return redirect(reverse_lazy('my_map'))
+            Prediction.objects.create(
+                user=new_user
+            )
+            return redirect('/static/build/index.html')
         else:
-            return redirect(reverse_lazy('registration'))
+            return render(request, "registration/register.html", {"form": form})
 
     def get(self, request):
         form = RegisterForm()
@@ -104,6 +107,7 @@ class LoadStatesAPIView(APIView):
     renderer_classes = [JSONRenderer]
 
     def get(self, request):
+
         view_id = request.GET.get('view_id')
 
         if not view_id:
@@ -111,29 +115,31 @@ class LoadStatesAPIView(APIView):
                 prediction = request.user.prediction
             except AttributeError:
                 return Response(status=403)
-
-            dict_obj = model_to_dict(prediction)
-
-
         else:
             try:
                 prediction = Prediction.objects.get(id=view_id)
             except:
                 return Response(status=403)
-            dict_obj = model_to_dict(prediction)
+
+        dict_obj = model_to_dict(prediction)
+
+        response_dict = {
+            'id': dict_obj['id'],
+            'user': dict_obj['user'],
+            'electoral_votes_dem': dict_obj['electoral_votes_dem'],
+            'electoral_votes_rep': dict_obj['electoral_votes_rep'],
+        }
 
         for key, obj in dict_obj.items():
             if obj == 'd':
-                fill_color = 'navy'
-                dict_obj[key] = {'fill': fill_color}
+                response_dict[key] = {'fill': 'navy'}
             elif obj == 'r':
-                fill_color = 'red'
-                dict_obj[key] = {'fill': fill_color}
+                response_dict[key] = {'fill': 'red'}
 
         if request.user or view_id:
             return Response(data={
                 'username': prediction.user.username,
-                'prediction': json.dumps(dict_obj),
+                'prediction': json.dumps(response_dict),
                 'base_url': request.META['HTTP_HOST']
             }, status=200)
         else:
