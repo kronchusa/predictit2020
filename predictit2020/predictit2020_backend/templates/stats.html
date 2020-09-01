@@ -84,9 +84,14 @@
 			</tr>
 			{% endfor %}
 			<tr>
-				<td><b>Total</b></td>
-				<td><b>{{ all_state_predictions.total_democrat|floatformat:2 }}</b></td>
-				<td><b>{{ all_state_predictions.total_republican|floatformat:2 }}</b></td>
+				<td><b>Total States (%)</b></td>
+				<td><b>{{ all_state_predictions.total_democrat|floatformat:2 }}%</b></td>
+				<td><b>{{ all_state_predictions.total_republican|floatformat:2 }}%</b></td>
+			</tr>
+			<tr>
+				<td><b>Total Electoral Votes</b></td>
+				<td><b>{{ total_electoral.0 }}</b></td>
+				<td><b>{{ total_electoral.1 }}</b></td>
 			</tr>
 		</table>
 	</div>

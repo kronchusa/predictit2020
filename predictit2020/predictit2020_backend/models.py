@@ -27,7 +27,9 @@ class Prediction(models.Model):
     KS = models.CharField(max_length=1, choices=(('d', 'Democrat'), ('r', 'Republican')), null=True, blank=True)
     KY = models.CharField(max_length=1, choices=(('d', 'Democrat'), ('r', 'Republican')), null=True, blank=True)
     LA = models.CharField(max_length=1, choices=(('d', 'Democrat'), ('r', 'Republican')), null=True, blank=True)
-    ME = models.CharField(max_length=1, choices=(('d', 'Democrat'), ('r', 'Republican')), null=True, blank=True)
+    ME = models.CharField(max_length=4, choices=(
+        ('d', 'Democrat'), ('r', 'Republican'), ('d2r2', 'd2r2'), ('d3r1', 'd3r1'), ('d1r3', 'd1r3'),
+    ), null=True, blank=True)
     MD = models.CharField(max_length=1, choices=(('d', 'Democrat'), ('r', 'Republican')), null=True, blank=True)
     MA = models.CharField(max_length=1, choices=(('d', 'Democrat'), ('r', 'Republican')), null=True, blank=True)
     MI = models.CharField(max_length=1, choices=(('d', 'Democrat'), ('r', 'Republican')), null=True, blank=True)
@@ -35,7 +37,9 @@ class Prediction(models.Model):
     MS = models.CharField(max_length=1, choices=(('d', 'Democrat'), ('r', 'Republican')), null=True, blank=True)
     MO = models.CharField(max_length=1, choices=(('d', 'Democrat'), ('r', 'Republican')), null=True, blank=True)
     MT = models.CharField(max_length=1, choices=(('d', 'Democrat'), ('r', 'Republican')), null=True, blank=True)
-    NE = models.CharField(max_length=1, choices=(('d', 'Democrat'), ('r', 'Republican')), null=True, blank=True)
+    NE = models.CharField(max_length=4, choices=(
+        ('d', 'Democrat'), ('r', 'Republican'), ('d1r4', 'd1r4'), ('d2r3', 'd2r3'), ('d3r2', 'd3r2'), ('d4r1', 'd4r1'),
+    ), null=True, blank=True)
     NV = models.CharField(max_length=1, choices=(('d', 'Democrat'), ('r', 'Republican')), null=True, blank=True)
     NH = models.CharField(max_length=1, choices=(('d', 'Democrat'), ('r', 'Republican')), null=True, blank=True)
     NJ = models.CharField(max_length=1, choices=(('d', 'Democrat'), ('r', 'Republican')), null=True, blank=True)
@@ -78,6 +82,17 @@ class Prediction(models.Model):
         all_fields['ID'] = all_fields.pop('IDA')
 
     @staticmethod
+    def total_electoral():
+        predictions = Prediction.objects.all()
+        dem = 0
+        rep = 0
+        for prediction in predictions:
+            dem += prediction.electoral_votes_dem
+            rep += prediction.electoral_votes_rep
+
+        return dem, rep
+
+    @staticmethod
     def state_percentages(state: str) -> dict:
         all_predictions = Prediction.objects.all()
         state_democrat = 0
@@ -91,6 +106,27 @@ class Prediction(models.Model):
                 state_democrat += 1
             if attr == "r":
                 state_republican += 1
+            if attr == 'd4r1':
+                state_democrat += 4 / 5
+                state_republican += 1 / 5
+            if attr == 'd3r1':
+                state_democrat += 3 / 4
+                state_republican += 1 / 4
+            if attr == 'd3r2':
+                state_democrat += 3 / 5
+                state_republican += 2 / 5
+            if attr == 'd2r2':
+                state_democrat += 2 / 4
+                state_republican += 2 / 4
+            if attr == 'd2r3':
+                state_democrat += 2 / 5
+                state_republican += 3 / 5
+            if attr == 'd1r3':
+                state_democrat += 1 / 4
+                state_republican += 3 / 4
+            if attr == 'd1r4':
+                state_democrat += 1 / 5
+                state_republican += 4 / 5
 
         total = state_democrat + state_republican
         return {'d': (state_democrat / total) * 100, 'r': (state_republican / total) * 100}
@@ -117,7 +153,7 @@ class Prediction(models.Model):
         return {
             'all_states': sorted_all_states,
             'total_democrat': all_democrat_percentages / 51,
-            'total_republican': all_republican_percentages / 51
+            'total_republican': all_republican_percentages / 51,
         }
 
     def calculate_number_of_states_right(self):

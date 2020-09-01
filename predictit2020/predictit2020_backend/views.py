@@ -92,8 +92,25 @@ class SaveStatesAPIView(APIView):
                 state = 'IDA'
             if fill_dict['fill'] == 'navy':
                 setattr(prediction, state, 'd')
-            else:
+            elif fill_dict['fill'] == 'red':
                 setattr(prediction, state, 'r')
+            elif state == 'NE':
+                if fill_dict['fill'] == '#40F':
+                    setattr(prediction, state, 'd4r1')
+                elif fill_dict['fill'] == '#80A':
+                    setattr(prediction, state, 'd3r2')
+                elif fill_dict['fill'] == '#A08':
+                    setattr(prediction, state, 'd2r3')
+                elif fill_dict['fill'] == '#B04':
+                    setattr(prediction, state, 'd1r4')
+
+            elif state == 'ME':
+                if fill_dict['fill'] == '#40F':
+                    setattr(prediction, state, 'd3r1')
+                elif fill_dict['fill'] == '#A0A':
+                    setattr(prediction, state, 'd2r2')
+                elif fill_dict['fill'] == '#C08':
+                    setattr(prediction, state, 'd1r3')
 
         prediction.electoral_votes_dem = request.data['electoralVotes']['democrats']
         prediction.electoral_votes_rep = request.data['electoralVotes']['republicans']
@@ -135,6 +152,24 @@ class LoadStatesAPIView(APIView):
                 response_dict[key] = {'fill': 'navy'}
             elif obj == 'r':
                 response_dict[key] = {'fill': 'red'}
+            elif key == 'ME':
+                if obj == 'd3r1':
+                    response_dict[key] = {'fill': "#40F"}
+                elif obj == 'd2r2':
+                    response_dict[key] = {'fill': "#A0A"}
+                elif obj == 'd1r3':
+                    response_dict[key] = {'fill': "#C08"}
+
+            elif key == 'NE':
+                if obj == 'd4r1':
+                    response_dict[key] = {'fill': '#40F'}
+                elif obj == 'd3r2':
+                    response_dict[key] = {'fill': '#80A'}
+                elif obj == 'd2r3':
+                    response_dict[key] = {'fill': '#A08'}
+                elif obj == 'd1r4':
+                    response_dict[key] = {'fill': '#B04'}
+
 
         if request.user or view_id:
             return Response(data={
@@ -152,4 +187,5 @@ class StatsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['all_state_predictions'] = Prediction.all_state_percentages()
+        context['total_electoral'] = Prediction.total_electoral()
         return context
