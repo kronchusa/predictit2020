@@ -32,6 +32,7 @@
 								<ul class="w3layouts_menu__list">
 									<li class="active"><a href="{% url 'homepage' %}">Home</a></li>
 									<li><a href="{% if request.user.is_authenticated %}{% static 'build/index.html' %}{% else %}{% url 'login' %}?next={% static 'build/index.html' %}{% endif %}">My Prediction</a></li>
+									<li><a href="{% url 'stats' %}">Stats</a></li>
 								</ul>
 							</nav>
 						</div>

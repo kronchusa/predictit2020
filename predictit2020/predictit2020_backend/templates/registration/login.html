@@ -28,8 +28,9 @@
 						<div class="shy-menu-panel">
 							<nav class="menu menu--horatio link-effect-8" id="link-effect-8">
 								<ul class="w3layouts_menu__list">
-									<li class="active"><a href="{% url 'homepage' %}">Home</a></li>
-									<li><a href="{% if request.user.is_authenticated %}{% static 'build/index.html' %}{% else %}{% url 'login' %}?next={% static 'build/index.html' %}{% endif %}">My Prediction</a></li>
+									<li><a href="{% url 'homepage' %}">Home</a></li>
+									<li class="active"><a href="{% if request.user.is_authenticated %}{% static 'build/index.html' %}{% else %}{% url 'login' %}?next={% static 'build/index.html' %}{% endif %}">My Prediction</a></li>
+									<li><a href="{% url 'stats' %}">Stats</a></li>
 								</ul>
 							</nav>
 						</div>

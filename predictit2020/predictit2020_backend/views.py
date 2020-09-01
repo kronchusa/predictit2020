@@ -144,3 +144,12 @@ class LoadStatesAPIView(APIView):
             }, status=200)
         else:
             return Response(status=403)
+
+
+class StatsView(TemplateView):
+    template_name = 'stats.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['all_state_predictions'] = Prediction.all_state_percentages()
+        return context

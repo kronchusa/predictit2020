@@ -64,6 +64,62 @@ class Prediction(models.Model):
 
     excluded_fields = ['user', 'electoral_votes_dem', 'electoral_votes_rep', 'id', 'number_correct']
 
+    @staticmethod
+    def remove_all_non_state_fields(all_fields: set):
+        all_fields.remove('id')
+        all_fields.remove('electoral_votes_rep')
+        all_fields.remove('electoral_votes_dem')
+        all_fields.remove('user')
+        all_fields.remove('number_correct')
+
+    @staticmethod
+    def modify_state_names(all_fields: dict):
+        all_fields['DC'] = all_fields.pop('DC2')
+        all_fields['ID'] = all_fields.pop('IDA')
+
+    @staticmethod
+    def state_percentages(state: str) -> dict:
+        all_predictions = Prediction.objects.all()
+        state_democrat = 0
+        state_republican = 0
+        for prediction in all_predictions:
+            if not hasattr(prediction, state):
+                return None
+
+            attr = getattr(prediction, state)
+            if attr == "d":
+                state_democrat += 1
+            if attr == "r":
+                state_republican += 1
+
+        total = state_democrat + state_republican
+        return {'d': (state_democrat / total) * 100, 'r': (state_republican / total) * 100}
+
+    @staticmethod
+    def all_state_percentages():
+        all_fields = set(p.name for p in Prediction._meta.get_fields())
+
+        Prediction.remove_all_non_state_fields(all_fields)
+
+        all_states = {}
+
+        all_democrat_percentages = 0.0
+        all_republican_percentages = 0.0
+
+        for field in all_fields:
+            all_states[field] = Prediction.state_percentages(field)
+            all_democrat_percentages += all_states[field]['d']
+            all_republican_percentages += all_states[field]['r']
+
+        Prediction.modify_state_names(all_states)
+        sorted_all_states = sorted(all_states.items(), key=lambda state: state[0])
+
+        return {
+            'all_states': sorted_all_states,
+            'total_democrat': all_democrat_percentages / 51,
+            'total_republican': all_republican_percentages / 51
+        }
+
     def calculate_number_of_states_right(self):
         counter = 0
         actual = Prediction.objects.filter(user__username='actual').first()

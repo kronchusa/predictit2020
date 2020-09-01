@@ -41,16 +41,16 @@
 			<div class="agile_banner_info">
 				<div class="agile_banner_info1">
 					<div id="typed-strings" class="agileits_w3layouts_strings">
-						<p>Predict the <i>election results</i></p>
-						<p>Make your <i>custom map</i> now</p>
-						<p>Think you can <i>call it?</i></p>
-						<p>More fun than a <i>root canal</i></p>
-						<p><i>Trump or Biden?</i> Who will it be?</p>
+						<p>Ahhh, I see you are interested <i>in stats</i></p>
+						<p>A truly refined <i>thinker</i> with good taste</p>
+						<p>Our stats are below, <i>check them out!</i></p>
+						<p>Help I'm trapped in a <i>basement</i></p>
+						<p><i>Trump or Biden?</i></p>
 					</div>
 					<span id="typed" style="white-space:pre;"></span>
-					<div style="margin-top:50px;">
+					<!-- <div style="margin-top:50px;">
 						<a class="btn btn-primary" href="{% if request.user.is_authenticated %}{% static 'build/index.html' %}{% else %}{% url 'login' %}?next={% static 'build/index.html' %}{% endif %}">Predict Now</a>
-					</div>
+					</div> -->
 				</div>
 			</div>
 		</div>
@@ -69,45 +69,26 @@
 </style>
 <div class="container predictittext">
 	<div class="well" style="margin-top:50px;margin-bottom:50px;">
-		<h2 style="">Correct Predictions</h2>
-		{% if not declare_winners %}
-		<p>The list of users who have correctly predicted the election will appear here after the results on November 3rd.</p>
-		{% endif %}
-		{% if declare_winners %}
-		<h3>Well done to the following users:</h3>
-		{% endif %}
-		<div class="well">
-			<table class="table">
-				<tbody>
-				{% if declare_winners %}
-
-				{% for winner in winners %}
-				<tr>
-					<td><h4>{{ winner.user.username }}</h4></td>
-				</tr>
-				{% empty %}
-				<tr>
-					<td><h4>Nobody correctly predicted this election.  LOL</h4></td>
-				</tr>
-				{% endfor %}
-				{% else %}
-				<tr>
-					<td>{{ prediction_count }} prediction{% if prediction_count != 1 %}s{% endif %} made so far!</td>
-				</tr>
-				{% endif %}
-				</tbody>
-			</table>
-		</div>
-
-		{% if not declare_winners %}
-		<p>Happy Predicting!</p>
-		<p style="margin-bottom:300px;">- The Management</p>
-		{% else %}
-		<p>
-			The list of users above correctly predicted the election results exactly before November 3rd.  Their skills of prognostication know few bounds.
-			I, personally, am like ridiculously impressed by each and every one of them.
-		</p>
-		{% endif %}
+		<h2>Stats</h2>
+		<table class="table">
+			<tr>
+				<th>State</th>
+				<th>Democrat Predictions (%)</th>
+				<th>Republican Predictions (%)</th>
+			</tr>
+			{% for state_key, state_value in all_state_predictions.all_states %}
+			<tr>
+				<td>{{ state_key }}</td>
+				<td>{{ state_value.d|floatformat:2 }}%</td>
+				<td>{{ state_value.r|floatformat:2 }}%</td>
+			</tr>
+			{% endfor %}
+			<tr>
+				<td><b>Total</b></td>
+				<td><b>{{ all_state_predictions.total_democrat|floatformat:2 }}</b></td>
+				<td><b>{{ all_state_predictions.total_republican|floatformat:2 }}</b></td>
+			</tr>
+		</table>
 	</div>
 
 </div>
